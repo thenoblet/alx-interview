@@ -15,7 +15,7 @@ def pascal_triangle(n):
     list of lists: A list of lists, where each inner list represents
     a row in Pascal's Triangle.
     Each row contains integers representing the binomial coefficients.
-    
+
     Examples:
     >>> pascal_triangle(5)
     [
@@ -25,13 +25,13 @@ def pascal_triangle(n):
         [1, 3, 3, 1],
         [1, 4, 6, 4, 1]
     ]
-    
+
     >>> pascal_triangle(0)
     []
-    
+
     >>> pascal_triangle(-1)
     []
-    
+
     >>> pascal_triangle(1)
     [[1]]
     """
@@ -49,4 +49,3 @@ def pascal_triangle(n):
         triangle.append(row)
 
     return triangle
-
