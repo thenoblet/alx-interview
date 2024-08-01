@@ -1,5 +1,3 @@
-
-```markdown
 # Lockboxes Problem Solution
 
 ## Overview
