@@ -1,8 +1,8 @@
-# Lockboxes Problem Solution
+# Lockboxes Unlocking Utility
 
 ## Overview
 
-The Lockboxes problem is a classic algorithmic challenge where you need to determine if all the boxes can be unlocked given a starting point and keys contained in each box. The solution uses Breadth-First Search (BFS) with Python list comprehensions to efficiently explore and unlock all reachable boxes.
+This project provides a utility function, `canUnlockAll`, which determines if all boxes in a set can be unlocked given a list of boxes where each box contains a list of keys to other boxes. This function is useful in scenarios where you need to ensure that every item (or box) can be accessed starting from an initial state.
 
 ## Problem Statement
 
@@ -13,13 +13,14 @@ You have `n` locked boxes, numbered from `0` to `n-1`. Each box may contain keys
 ```python
 def canUnlockAll(boxes):
     """
-    Determines if all the boxes can be unlocked.
+    Determine if all boxes can be unlocked starting from the first box.
 
     Parameters:
-    boxes (List[List[int]]): A list of lists where each inner list contains keys to other boxes.
+    boxes (List[List[int]]): A list of lists where each inner list
+    contains integers representing keys to other boxes.
 
     Returns:
-    bool: True if all boxes can be unlocked, otherwise False.
+    bool: True if all boxes can be unlocked, False otherwise.
     """
 ```
 
@@ -27,7 +28,7 @@ def canUnlockAll(boxes):
 
 ### Input
 
-- **`boxes`**: A list of lists, where each inner list contains keys (represented as integers) that open other boxes. 
+- **`boxes`**: A list of lists, where each inner list contains keys (represented as integers) that open other boxes.
 
 ### Output
 
@@ -35,23 +36,21 @@ def canUnlockAll(boxes):
 
 ### How It Works
 
-1. **Initialization**:
+1. **Initialisation**:
    - Start with the first box (`box 0`), which is initially unlocked.
-   - Create a list called `visited` to keep track of which boxes have been unlocked.
-   - Use a `queue` to manage the boxes that need to be explored.
+   - Create a list called `unlocked` to keep track of which boxes have been unlocked.
+   - Use a `stack` to manage the boxes that need to be explored.
 
-2. **BFS Traversal**:
-   - Process each box in the queue:
-     - If a box has not been visited:
-       - Mark it as visited.
-       - Retrieve all keys from this box.
-       - Use list comprehension to filter keys for boxes that haven't been visited yet.
-       - Add these newly accessible boxes to the queue.
+2. **DFS Traversal**:
+   - The process is similar to Depth-First Search (DFS):
+     - Pop a box from the stack.
+     - For each key in the box, check if it opens a new box.
+     - If a key opens a new box, mark it as unlocked and push it onto the stack for further exploration.
 
 3. **Completion Check**:
-   - After processing all reachable boxes, check if all boxes have been visited to determine if it is possible to unlock all of them.
+   - After processing all reachable boxes, check if all boxes have been unlocked. If all entries in the `unlocked` list are `True`, return `True`; otherwise, return `False`.
 
-### Detailed Example
+### Example
 
 Given the following list of boxes:
 
@@ -60,36 +59,35 @@ boxes = [[1], [2], [3], [4], []]
 ```
 
 1. **Initialization**:
-   - `visited = [False, False, False, False, False]`
-   - `queue = [0]` (Start with box 0)
+   - `unlocked = [True, False, False, False, False]`
+   - `stack = [0]` (Start with box 0)
 
 2. **Processing Box 0**:
    - Keys in box 0: `[1]`
-   - Mark box 0 as visited: `visited = [True, False, False, False, False]`
-   - Add box 1 (key `1`) to the queue: `queue = [1]`
+   - Mark box 1 as unlocked: `unlocked = [True, True, False, False, False]`
+   - Add box 1 to the stack: `stack = [1]`
 
 3. **Processing Box 1**:
    - Keys in box 1: `[2]`
-   - Mark box 1 as visited: `visited = [True, True, False, False, False]`
-   - Add box 2 (key `2`) to the queue: `queue = [2]`
+   - Mark box 2 as unlocked: `unlocked = [True, True, True, False, False]`
+   - Add box 2 to the stack: `stack = [2]`
 
 4. **Processing Box 2**:
    - Keys in box 2: `[3]`
-   - Mark box 2 as visited: `visited = [True, True, True, False, False]`
-   - Add box 3 (key `3`) to the queue: `queue = [3]`
+   - Mark box 3 as unlocked: `unlocked = [True, True, True, True, False]`
+   - Add box 3 to the stack: `stack = [3]`
 
 5. **Processing Box 3**:
    - Keys in box 3: `[4]`
-   - Mark box 3 as visited: `visited = [True, True, True, True, False]`
-   - Add box 4 (key `4`) to the queue: `queue = [4]`
+   - Mark box 4 as unlocked: `unlocked = [True, True, True, True, True]`
+   - Add box 4 to the stack: `stack = [4]`
 
 6. **Processing Box 4**:
    - Keys in box 4: `[]` (No keys)
-   - Mark box 4 as visited: `visited = [True, True, True, True, True]`
-   - Queue is empty.
+   - All boxes are now unlocked.
 
 7. **Completion**:
-   - All boxes have been visited: `visited = [True, True, True, True, True]`
+   - All boxes have been visited: `unlocked = [True, True, True, True, True]`
    - Function returns `True`.
 
 ## Usage
@@ -109,4 +107,5 @@ print(canUnlockAll(boxes2))  # Output: True
 boxes3 = [[1, 4], [2], [0, 4, 1], [3], [], [4, 1], [5, 6]]
 print(canUnlockAll(boxes3))  # Output: False
 ```
+
 
