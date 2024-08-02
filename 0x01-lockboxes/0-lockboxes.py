@@ -26,14 +26,6 @@ def canUnlockAll(boxes):
     Returns:
     bool: True if all boxes can be unlocked, False otherwise.
 
-    Example:
-    >>> boxes = [[1, 2], [2, 3], [3], []]
-    >>> canUnlockAll(boxes)
-    True
-
-    >>> boxes = [[1], [2], [3], []]
-    >>> canUnlockAll(boxes)
-    False
     """
     num_of_boxes = len(boxes)
     visited = [False] * num_of_boxes
