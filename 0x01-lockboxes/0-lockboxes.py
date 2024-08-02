@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 """
 This module provides a utility function for determining if all
@@ -40,3 +40,4 @@ def canUnlockAll(boxes):
             queue.extend(new_boxes)
 
     return all(visited)
+
