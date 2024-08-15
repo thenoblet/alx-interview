@@ -98,11 +98,6 @@ def parse_log():
         line_count += 1
         if line_count == 10:
             print_stats()
-            line_count = 0
-            status_codes.update({code: 0 for code in status_codes})
-
-    if line_count > 0:
-        print_stats()
 
 
 parse_log()
