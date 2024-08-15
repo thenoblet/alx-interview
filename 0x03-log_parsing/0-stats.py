@@ -74,7 +74,10 @@ def parse_log():
 
     """
     log_pattern = re.compile(
-        r'(\d{1,3}\.){3}\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\] "GET /projects/260 HTTP/1.1" \d{3} \d+'
+        r'(\d{1,3}\.){3}\d{1,3} - \['
+        r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\] '
+        r'"GET /projects/260 HTTP/1.1" '
+        r'\d{3} \d+'
     )
 
     global total_file_size
