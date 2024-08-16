@@ -84,21 +84,25 @@ def parse_log():
     line_count = 0
     total_file_size = 0
 
-    for line in sys.stdin:
-        match = log_pattern.match(line)
-        if not match:
-            continue
+    try:
+        for line in sys.stdin:
+            match = log_pattern.match(line)
+            if not match:
+                continue
 
-        log_parts = line.strip().split()
+            log_parts = line.strip().split()
 
-        file_size = int(log_parts[-1])
-        status_code = int(log_parts[-2])
-        update_stats(status_code, file_size)
+            file_size = int(log_parts[-1])
+            status_code = int(log_parts[-2])
+            update_stats(status_code, file_size)
 
-        line_count += 1
-        if line_count == 10:
-            print_stats()
-            line_count = 0
+            line_count += 1
+            if line_count == 10:
+                print_stats()
+                line_count = 0
+    except KeyboardInterrupt:
+        print_stats()
+        sys.exit(0)
 
     if line_count > 0:
         print_stats()
