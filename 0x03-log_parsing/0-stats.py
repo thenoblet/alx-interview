@@ -21,24 +21,7 @@ import signal
 status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
 
-def handle_sigint(sig, frame):
-    """
-    Signal handler for SIGINT (e.g., Ctrl+C).
-    Prints the total file size and the count of each status code tracked,
-    then exits the program.
-
-    Args:
-        sig (int): The signal number.
-        frame (frame object): The current stack frame.
-    """
-    print_stats()
-    sys.exit(0)
-
-
-signal.signal(signal.SIGINT, handle_sigint)
-
-
-def print_stats():
+def print_stats(status_codes: dict, total_file_size: int) -> None:
     """
     Prints the total file size and the count of each status code tracked.
     """
@@ -48,7 +31,7 @@ def print_stats():
             print(f"{status_code}: {value}")
 
 
-def update_stats(status_code: int, file_size: int) -> None:
+def update_stats(status_code: int, file_size: int, total_file_size: int) -> None:
     """
     Updates the total file size and the count of a specific status code.
 
@@ -56,11 +39,12 @@ def update_stats(status_code: int, file_size: int) -> None:
         status_code (int): The HTTP status code to track.
         file_size (int): The size of the file transferred.
     """
-    global total_file_size
     total_file_size += file_size
 
     if status_code in status_codes:
         status_codes[status_code] += 1
+     
+    return total_file_size
 
 
 def parse_log():
@@ -80,7 +64,6 @@ def parse_log():
         r'\d{3} \d+'
     )
 
-    global total_file_size
     line_count = 0
     total_file_size = 0
 
@@ -94,18 +77,18 @@ def parse_log():
 
             file_size = int(log_parts[-1])
             status_code = int(log_parts[-2])
-            update_stats(status_code, file_size)
+            total_file_size = update_stats(status_code, file_size, total_file_size)
 
             line_count += 1
             if line_count == 10:
-                print_stats()
+                print_stats(status_codes, total_file_size)
                 line_count = 0
     except KeyboardInterrupt:
-        print_stats()
+        print_stats(status_codes, total_file_size)
         sys.exit(0)
 
     if line_count > 0:
-        print_stats()
+        print_stats(status_codes, total_file_size)
 
 
 if __name__ == "__main__":
