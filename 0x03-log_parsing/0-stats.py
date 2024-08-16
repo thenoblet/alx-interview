@@ -15,10 +15,6 @@ data before exiting.
 
 import sys
 import re
-import signal
-
-
-status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
 
 def print_stats(status_codes: dict, total_file_size: int) -> None:
@@ -31,7 +27,12 @@ def print_stats(status_codes: dict, total_file_size: int) -> None:
             print(f"{status_code}: {value}")
 
 
-def update_stats(status_code: int, file_size: int, total_file_size: int) -> None:
+def update_stats(
+        status_codes: dict,
+        status_code: int,
+        file_size: int,
+        total_file_size: int
+) -> int:
     """
     Updates the total file size and the count of a specific status code.
 
@@ -43,11 +44,11 @@ def update_stats(status_code: int, file_size: int, total_file_size: int) -> None
 
     if status_code in status_codes:
         status_codes[status_code] += 1
-     
+
     return total_file_size
 
 
-def parse_log():
+def parse_log() -> None:
     """
     Parses log entries from standard input, tracking the total file size and
     counting occurrences of specific HTTP status codes. After every 10 lines,
@@ -57,6 +58,17 @@ def parse_log():
     <IP> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
 
     """
+    status_codes = {
+        200: 0,
+        301: 0,
+        400: 0,
+        401: 0,
+        403: 0,
+        404: 0,
+        405: 0,
+        500: 0
+    }
+
     log_pattern = re.compile(
         r'(\d{1,3}\.){3}\d{1,3} - \['
         r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}\] '
@@ -77,7 +89,9 @@ def parse_log():
 
             file_size = int(log_parts[-1])
             status_code = int(log_parts[-2])
-            total_file_size = update_stats(status_code, file_size, total_file_size)
+            total_file_size = update_stats(
+                status_codes, status_code, file_size, total_file_size
+            )
 
             line_count += 1
             if line_count == 10:
