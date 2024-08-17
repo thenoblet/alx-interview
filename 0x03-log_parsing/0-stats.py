@@ -18,53 +18,6 @@ import re
 from typing import Dict
 
 
-def print_stats(status_codes: Dict[str, int], total_file_size: int) -> None:
-    """
-    Prints the total file size and the count of each status code tracked.
-    """
-    print(f"File size: {total_file_size}")
-    for status_code, value in status_codes.items():
-        if value > 0:
-            print(f"{status_code}: {value}")
-
-
-def update_stats(
-        status_codes: dict,
-        status_code: str,
-        file_size: int,
-) -> int:
-    """
-    Updates the total file size and the count of a specific status code.
-
-    Args:
-        status_code (int): The HTTP status code to track.
-        file_size (int): The size of the file transferred.
-    """
-    total_file_size = 0
-    total_file_size += file_size
-
-    if status_code in status_codes:
-        status_codes[status_code] += 1
-
-    return total_file_size
-
-
-def extract_data(line: str) -> tuple:
-    """
-    Extracts the status code and file size from a log entry.
-
-    Args:
-        line (str): A log entry from standard input.
-
-    Returns:
-        tuple: A tuple containing the status code and file size.
-    """
-    log_parts = line.split()
-    status_code = log_parts[-2]
-    file_size = int(log_parts[-1])
-    return status_code, file_size
-
-
 def parse_log() -> None:
     """
     Parses log entries from standard input, tracking the total file size and
@@ -131,6 +84,53 @@ def parse_log() -> None:
         print(f"File size: {total_file_size}")
     elif line_count > 0:
         print_stats(status_codes, total_file_size)
+
+
+def print_stats(status_codes: Dict[str, int], total_file_size: int) -> None:
+    """
+    Prints the total file size and the count of each status code tracked.
+    """
+    print(f"File size: {total_file_size}")
+    for status_code, value in status_codes.items():
+        if value > 0:
+            print(f"{status_code}: {value}")
+
+
+def update_stats(
+        status_codes: dict,
+        status_code: str,
+        file_size: int,
+) -> int:
+    """
+    Updates the total file size and the count of a specific status code.
+
+    Args:
+        status_code (int): The HTTP status code to track.
+        file_size (int): The size of the file transferred.
+    """
+    total_file_size = 0
+    total_file_size += file_size
+
+    if status_code in status_codes:
+        status_codes[status_code] += 1
+
+    return total_file_size
+
+
+def extract_data(line: str) -> tuple:
+    """
+    Extracts the status code and file size from a log entry.
+
+    Args:
+        line (str): A log entry from standard input.
+
+    Returns:
+        tuple: A tuple containing the status code and file size.
+    """
+    log_parts = line.split()
+    status_code = log_parts[-2]
+    file_size = int(log_parts[-1])
+    return status_code, file_size
 
 
 if __name__ == "__main__":
