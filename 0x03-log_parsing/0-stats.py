@@ -97,7 +97,7 @@ def print_stats(status_codes: Dict[str, int], total_file_size: int) -> None:
 
 
 def update_stats(
-        status_codes: dict,
+        status_codes: Dict[str, int],
         status_code: str,
         file_size: int,
 ) -> int:
