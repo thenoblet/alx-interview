@@ -35,7 +35,7 @@ request(apiUrl, (error, response, body) => {
     return;
   }
 
-  /** 
+  /**
    * The movie object parsed from the response body.
    * @type {Object}
    * @property {Array<string>} characters - URLs of the characters in the movie.
@@ -49,20 +49,18 @@ request(apiUrl, (error, response, body) => {
    * @param {string} url - The URL of the character resource.
    * @returns {Promise<string>} - A promise that resolves to the character's name.
    */
-  const fetchCharacter = (url) => {
-    return new Promise((resolve, reject) => {
-      request(url, (error, response, body) => {
-        if (error) reject(error);
-        else if (response.statusCode !== 200) reject(new Error(`Invalid status code: ${response.statusCode}`));
-        else resolve(JSON.parse(body).name);
-      });
+  const fetchCharacter = (url) => new Promise((resolve, reject) => {
+    request(url, (error, response, body) => {
+      if (error) reject(error);
+      else if (response.statusCode !== 200) reject(new Error(`Invalid status code: ${response.statusCode}`));
+      else resolve(JSON.parse(body).name);
     });
-  };
+  });
 
   // Fetches all characters concurrently and prints their names
   Promise.all(characterUrls.map(fetchCharacter))
-    .then(characters => {
-      characters.forEach(character => console.log(character));
+    .then((characters) => {
+      characters.forEach((character) => console.log(character));
     })
-    .catch(error => console.error('Error:', error));
+    .catch((error) => console.error('Error:', error));
 });
