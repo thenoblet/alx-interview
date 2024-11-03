@@ -2,6 +2,7 @@
 
 """ Prime number game """
 
+
 def isPrime(num):
     """
     Check if a number is prime.
@@ -16,6 +17,7 @@ def isPrime(num):
         if num % i == 0:
             return False
     return True
+
 
 def get_primes_and_multiples(n):
     """
@@ -34,6 +36,7 @@ def get_primes_and_multiples(n):
             moves[i] = removed
     return moves
 
+
 def play_game(n):
     """
     Simulate a single game with optimal play.
@@ -44,28 +47,29 @@ def play_game(n):
     """
     if n < 2:  # No prime numbers available for first move
         return False
-        
+
     # Get all possible moves and their impacts
     numbers = set(range(1, n + 1))
     moves = get_primes_and_multiples(n)
-    
+
     def get_valid_moves():
         return [p for p in moves.keys() if p in numbers]
-    
+
     # Maria's turn (True = Maria's turn, False = Ben's turn)
     turn = True
-    
+
     while True:
         valid_moves = get_valid_moves()
-        
+
         if not valid_moves:  # No valid moves left
             return not turn  # Return True if it's Ben's turn (Maria won)
-            
+
         # Choose the move that leaves opponent with fewest options
         best_move = valid_moves[0]
         numbers.difference_update(moves[best_move])
 
         turn = not turn
+
 
 def isWinner(x, nums):
     """
@@ -78,16 +82,16 @@ def isWinner(x, nums):
     """
     if not nums or x < 1:
         return None
-        
+
     maria_wins = 0
     ben_wins = 0
-    
+
     for n in nums[:x]:  # Only play x rounds
         if play_game(n):
             maria_wins += 1
         else:
             ben_wins += 1
-            
+
     if maria_wins > ben_wins:
         return "Maria"
     elif ben_wins > maria_wins:
