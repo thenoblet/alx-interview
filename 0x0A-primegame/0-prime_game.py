@@ -4,8 +4,9 @@
 Prime Game Module
 
 This module implements a two-player mathematical game involving prime numbers.
-The game is played between Maria and Ben, where they take turns choosing prime 
-numbers and removing their multiples from a set of consecutive integers.
+The game is played between Maria and Ben, where they take turns choosing
+prime numbers and removing their multiples from a set of
+consecutive integers.
 """
 
 
