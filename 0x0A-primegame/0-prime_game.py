@@ -1,103 +1,83 @@
 #!/usr/bin/python3
-
 """
 Prime Game Module
 
 This module implements a two-player mathematical game involving prime numbers.
-The game is played between Maria and Ben, where they take turns choosing
-prime numbers and removing their multiples from a set of
+The game is played between Maria and Ben, where they take turns
+choosing prime numbers and removing their multiples from a set of
 consecutive integers.
+
+Optimized for large inputs using the Sieve of Eratosthenes algorithm and
+pre-computation of game results for faster lookup.
 """
 
 
-def isPrime(num):
+def prime_numbers_sieve(n):
     """
-    Check if a number is prime.
+    Use Sieve of Eratosthenes to generate prime numbers up to n.
     Args:
-        num: number to check
+        n (int): Upper limit
     Returns:
-        bool: True if prime, False otherwise
+        list: List of booleans where True indicates a prime number
     """
-    if num < 2:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+    primes = [True] * (n + 1)
+    primes[0] = primes[1] = False
+
+    for i in range(2, int(n ** 0.5) + 1):
+        if primes[i]:
+            for j in range(i * i, n + 1, i):
+                primes[j] = False
+    return primes
 
 
-def get_primes_and_multiples(n):
+def calculate_game_winners(n):
     """
-    Get set of numbers that will be removed when choosing each prime up to n.
+    Pre-calculate winners for games up to n.
     Args:
-        n: upper limit
+        n (int): Maximum game size to calculate
     Returns:
-        dict: prime number -> set of numbers that would be removed
+        list: List where index i contains True if Maria wins game of size i
     """
-    moves = {}
-    for i in range(2, n + 1):
-        if isPrime(i):
-            removed = set()
-            for j in range(i, n + 1, i):
-                removed.add(j)
-            moves[i] = removed
-    return moves
+    winners = [False] * (n + 1)
+    primes = prime_numbers_sieve(n)
 
+    # Handle edge cases
+    if n >= 2:
+        winners[2] = True  # Maria wins on n=2 by choosing 2
 
-def play_game(n):
-    """
-    Simulate a single game with optimal play.
-    Args:
-        n: upper limit of number set
-    Returns:
-        bool: True if Maria wins, False if Ben wins
-    """
-    if n < 2:  # No prime numbers available for first move
-        return False
+    # For each game size, determine winner
+    for i in range(3, n + 1):
+        # Count primes in range
+        prime_count = sum(1 for j in range(2, i + 1) if primes[j])
+        # If odd number of primes, Maria wins; if even, Ben wins
+        winners[i] = prime_count % 2 == 1
 
-    # Get all possible moves and their impacts
-    numbers = set(range(1, n + 1))
-    moves = get_primes_and_multiples(n)
-
-    def get_valid_moves():
-        return [p for p in moves.keys() if p in numbers]
-
-    # Maria's turn (True = Maria's turn, False = Ben's turn)
-    turn = True
-
-    while True:
-        valid_moves = get_valid_moves()
-
-        if not valid_moves:  # No valid moves left
-            return not turn  # Return True if it's Ben's turn (Maria won)
-
-        # Choose the move that leaves opponent with fewest options
-        best_move = valid_moves[0]
-        numbers.difference_update(moves[best_move])
-
-        turn = not turn
+    return winners
 
 
 def isWinner(x, nums):
     """
     Determine the winner of multiple rounds of the prime game.
     Args:
-        x: number of rounds
-        nums: array of n values for each round
+        x (int): number of rounds
+        nums (list): array of n values for each round
     Returns:
-        str: name of player with most wins, or None if tied
+        str: name of player with most wins ("Maria" or "Ben"), or None if tied
     """
-    if not nums or x < 1:
+    if not nums or x < 1 or x > 10000:
         return None
 
-    maria_wins = 0
-    ben_wins = 0
+    # Find maximum n to pre-calculate winners
+    max_n = max(nums)
+    if max_n > 10000:
+        return None
 
-    for n in nums[:x]:  # Only play x rounds
-        if play_game(n):
-            maria_wins += 1
-        else:
-            ben_wins += 1
+    # Pre-calculate winners for all possible game sizes
+    winners = calculate_game_winners(max_n)
+
+    # Count wins for each player
+    maria_wins = sum(1 for n in nums[:x] if n > 1 and winners[n])
+    ben_wins = sum(1 for n in nums[:x] if n <= 1 or not winners[n])
 
     if maria_wins > ben_wins:
         return "Maria"
